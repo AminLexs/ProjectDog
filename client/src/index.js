@@ -1,8 +1,10 @@
  import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import App from './Components/root';
 import reportWebVitals from './reportWebVitals';
+import "bootswatch/dist/minty/bootstrap.min.css";
+ import "react-table-6/react-table.css";
 
 ReactDOM.render(
   <React.StrictMode>
