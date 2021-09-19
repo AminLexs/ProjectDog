@@ -17,7 +17,7 @@ class _Table extends Component {
               Header: 'Картинка',
               accessor: 'image',
               Cell: src => {
-                  return (<figure><img src={src.value} /></figure>)
+                  return (<figure><img src={src.value} alt={""}/></figure>)
               }
           },{
              Header: 'Порода',

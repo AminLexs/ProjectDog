@@ -11,8 +11,7 @@ a {
 }
 
 .filter{
-    display: flex;
-    justify-content: space-around;
+    display:inline-block;
 }
 
 .ReactTable .rt-thead{

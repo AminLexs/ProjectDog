@@ -1,68 +1,86 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import Table  from "./table"
-import Filter from "./filter"
 import Store from "../store/taskStore"
-
+import Select from 'react-select'
 
 import TaskAction from "../action/Action"
- 
-class Root extends Component {
 
-  constructor(props){
-    const info = getStateFromFlux();
-    super(props)
-    this.state={
-      dogs: info.dogs,
-    }
-    this._onChange = this._onChange.bind(this);
-    this.error = this.error.bind(this);
-  }
 
-  componentWillMount() {
-    TaskAction.getDogs("")
-  }
 
-  componentDidMount() {
-    Store.addChangeListener(this._onChange, this.error);
-    Store.emitChange();
+function Root() {
+  const [dogs, setDogs] = useState([]);
+  const [isOpenModal, setModal] = useState(false);
+  const [search, setSearch] = React.useState('');
+  const [searchResult,setSearchResult] = useState([]);
+  const [optionsFilter,setOptionsFilter] = useState([ {value: 'default',label: 'Выберите породу'}])
+  const [currentOption,setOption] = useState('default')
+  const handleSearch = (event) => {
+    setSearch(event.target.value);
+  };
+  const _onChange = () => {
+    setDogs(Store.getDogs())
   }
-
-  componentWillUnmount() {
-    Store.removeChangeListener(this._onChange, this.error);
-  }
-  _onChange() {
-    this.setState(getStateFromFlux());
-  }
-  error() {
+  const error = () => {
     let err = Store.getError();
     if (err && err.status === 401) {
-      this.setState({ isOpenModal: true })
+      setModal(true)
     }
   }
 
-  handleGettingDogs(status){
-   // TaskAction.getDogs(status);
+  const handleFilter = (e) => {
+    setOption(e.value)
   }
+  function unique(arr) {
+    let result = [];
 
-  render() {
-    return (
-        <div>
-          <Filter 
-            onFiltering={this.handleGettingDogs}
-          />
+    for (let str of arr) {
+      if (!result.includes(str)) {
+        result.push(str);
+      }
+    }
 
-          <Table  
-            data={this.state.dogs}
-          />
+    return result.map(elem =>{ return {value:elem, label:elem}});
+  }
+  useEffect(() => {
+    TaskAction.getDogs("")
+    Store.addChangeListener(_onChange, error);
+    Store.emitChange();
+    let filters=[]
+    filters.push({value: 'default',label: 'Выберите породу'})
+    Array.prototype.push.apply(filters,unique(dogs.map(dog=>dog.breed)))
+    setOptionsFilter(filters)
+
+    let result = dogs.filter((item) =>
+        item.header.includes(search))
+    if(currentOption!=='default')
+      result = result.filter((item)=>{
+          if (item.breed === currentOption)
+           return item
+        else return
+    })
+    setSearchResult(result)
+
+    return () => {
+      Store.removeChangeListener(_onChange, error);
+    }
+  },[dogs, search, currentOption]);
+
+
+  return (
+      <div>
+        <div className={"filter"}>
+        <label htmlFor="search">
+          Поиск по заголовку:
+          <input id="search" type="text" onChange={handleSearch} />
+        </label>
+        <Select options={optionsFilter} defaultValue={optionsFilter[0]} onChange={handleFilter}/>
         </div>
-    );
-  }
+        <Table
+            data={searchResult}
+        />
+      </div>
+  );
 }
- 
-function getStateFromFlux() {
-  return {
-      dogs: Store.getDogs(),
-  };
-}
+
 
 export default Root;

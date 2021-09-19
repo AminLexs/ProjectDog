@@ -1,12 +1,10 @@
 import { EventEmitter } from "events";
 import Dispatcher from "../dispatcher/dispatcher";
 import actionTypes from "../action/types";
-//const config = require('config')
-var axios = require('axios');
+
 const CHANGE_EVENT = "change";
 const ERROR_EVENT = "error";
 let _dogs = [];
-let editingTask = null;
 let errorStatus = 0;
 let errorText = '';
 
