@@ -6,8 +6,8 @@ const PORT = config.port|| 5000
 
 const TaskActions = {
 
-    getDogs() { //send request to a server
-        axios.get(`http://localhost:${PORT}/`)
+   async getDogs() { //send request to a server
+       await axios.get(`http://localhost:${PORT}/`)
             .then(data => {
                     Dispatcher.dispatch({
                         type: actionTypes.REQUEST_SUCCESS,

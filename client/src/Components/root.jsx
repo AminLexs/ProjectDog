@@ -13,11 +13,13 @@ function Root() {
     const [searchResult, setSearchResult] = useState([]);
     const [optionsFilter, setOptionsFilter] = useState([{value: 'default', label: 'Выберите породу'}])
     const [currentOption, setOption] = useState('default')
+    const [isRefresh, setRefresh] = useState(true)
     const handleSearch = (event) => {
         setSearch(event.target.value);
     };
     const _onChange = () => {
-        setDogs(Store.getDogs())
+        let dogs = Store.getDogs()
+        setDogs(dogs)
     }
     const error = () => {
         let err = Store.getError();
@@ -31,7 +33,7 @@ function Root() {
         setOption(e.value)
     }
 
-    function unique(arr) {
+    function unique(arr) { //create array which consist of unique elements
         let result = [];
 
         for (let str of arr) {
@@ -45,26 +47,38 @@ function Root() {
         });
     }
 
+
     useEffect(() => {
-        TaskAction.getDogs("")
-        Store.addChangeListener(_onChange, error);
-        Store.emitChange();
+        async function fetchMyAPI() {
+            if (isRefresh) { //break infinite loop
+                document.getElementById("progressbar").style.visibility = 'visible'
+                await TaskAction.getDogs("")
+                Store.addChangeListener(_onChange, error);
+                Store.emitChange();
+                document.getElementById("progressbar").style.visibility  = 'hidden'
+                setRefresh(false)
+                setTimeout(() => setRefresh(true), 30000) //refresh every 30 sec
+            }
+        }
+
+        fetchMyAPI()
+
         let filters = []
         filters.push({value: 'default', label: 'Выберите породу'})
-        Array.prototype.push.apply(filters, unique(dogs.map(dog => dog.breed)))
+        Array.prototype.push.apply(filters, unique(dogs.map(dog => dog.breed))) //add breeds to options
         setOptionsFilter(filters)
 
         let result = dogs.filter((item) =>
             item.header.includes(search))
-        if (currentOption !== 'default')
+        if (currentOption !== 'default')//when something chose
             result = result.filter((item) => item.breed === currentOption ? true : false)
-
         setSearchResult(result)
 
         return () => {
             Store.removeChangeListener(_onChange, error);
         }
-    }, [dogs, search, currentOption]);
+
+    }, [isRefresh, search, currentOption]);
 
 
     return (
@@ -75,6 +89,9 @@ function Root() {
                     <input id="search" type="text" onChange={handleSearch}/>
                 </label>
                 <Select options={optionsFilter} defaultValue={optionsFilter[0]} onChange={handleFilter}/>
+            </div>
+            <div id='progressbar' className="progress">
+                <div className="indeterminate"></div>
             </div>
             <Table
                 data={searchResult}

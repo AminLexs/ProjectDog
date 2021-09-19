@@ -4,7 +4,7 @@ import './index.css';
 import App from './Components/root';
 import reportWebVitals from './reportWebVitals';
 import "bootswatch/dist/minty/bootstrap.min.css";
- import "react-table-6/react-table.css";
+import "react-table-6/react-table.css";
 
 ReactDOM.render(
   <React.StrictMode>

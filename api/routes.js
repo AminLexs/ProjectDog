@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
             breed: breed.title,
         }
     })).then(dogs => {
-        res.end(JSON.stringify(dogs))
+        res.end(JSON.stringify(dogs))//send dogs with breeds
     }).catch(err => {
             res.status(500)
             res.end(JSON.stringify(err))
