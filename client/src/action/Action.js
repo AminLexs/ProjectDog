@@ -1,11 +1,12 @@
 import Dispatcher from "../dispatcher/dispatcher";
 import actionTypes from "./types";
-var axios = require('axios');
-const PORT = 5000
+const axios = require('axios');
+const config = require('./../config');
+const PORT = config.port|| 5000
 
 const TaskActions = {
 
-    getDogs(status) {
+    getDogs() { //send request to a server
         axios.get(`http://localhost:${PORT}/`)
             .then(data => {
                     Dispatcher.dispatch({

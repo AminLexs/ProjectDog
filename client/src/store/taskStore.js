@@ -1,4 +1,4 @@
-import { EventEmitter } from "events";
+import {EventEmitter} from "events";
 import Dispatcher from "../dispatcher/dispatcher";
 import actionTypes from "../action/types";
 
@@ -12,13 +12,14 @@ let errorText = '';
 function formatDog(dog) {
     return {
         header: dog.title,
-        image:`https://images.dog.ceo//breeds//${dog.breed}//${dog.title}.jpg`,
+        image: `https://images.dog.ceo//breeds//${dog.breed}//${dog.title}.jpg`,
         breed: dog.breed,
 
     }
 }
 
 class Store extends EventEmitter {
+
     addChangeListener(taskRerender, errorCallback) {
         this.on(CHANGE_EVENT, taskRerender);
         this.on(ERROR_EVENT, errorCallback);
@@ -30,18 +31,20 @@ class Store extends EventEmitter {
     }
 
     emitChange(event) {
-        if(!event)
+        if (!event)
             this.emit(CHANGE_EVENT);
         else
             this.emit(event);
     }
-    getDogs(status) {
+
+    getDogs() {
         return _dogs;
     }
-    getError(){
+
+    getError() {
         return {
-            status : errorStatus,
-            text : errorText
+            status: errorStatus,
+            text: errorText
         }
     }
 }
@@ -51,6 +54,11 @@ Dispatcher.register((action) => {
         case actionTypes.REQUEST_SUCCESS:
             _dogs = action.dogs.map(formatDog);
             store.emitChange(CHANGE_EVENT);
+            break;
+        case actionTypes.ERROR:
+             errorStatus = action?.error?.status||503;
+             errorText = action?.error?.data||'Service Unavailable';
+            store.emitChange(ERROR_EVENT);
             break;
         default:
             console.log("no action")
