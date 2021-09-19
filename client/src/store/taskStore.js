@@ -14,8 +14,8 @@ let errorText = '';
 function formatDog(dog) {
     return {
         header: dog.title,
-        image: dog.title,
-        breed: dog.breedid,
+        image:`https://images.dog.ceo//breeds//${dog.breed}//${dog.title}.jpg`,
+        breed: dog.breed,
 
     }
 }

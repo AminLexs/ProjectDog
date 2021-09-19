@@ -9,13 +9,22 @@ class _Table extends Component {
         this.state = {
           headers : [{  
             Header: 'Заголовок',
-            accessor: 'header'
-            },{  
-            Header: 'Картинка',
-            accessor: 'image'
-            },{  
+            accessor: 'header',
+              Cell: row => {
+                 return (<div style={{ textAlign: "center" }}>{row.value}</div>)
+            }
+            }, {
+              Header: 'Картинка',
+              accessor: 'image',
+              Cell: src => {
+                  return (<figure><img src={src.value} /></figure>)
+              }
+          },{
              Header: 'Порода',
              accessor: 'breed',
+              Cell: row => {
+                  return (<div style={{ textAlign: "center" }}>{row.value}</div>)
+              }
             },
           ]
       }  

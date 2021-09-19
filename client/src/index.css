@@ -52,7 +52,25 @@ input[type="file"] {
     display:flex;
     justify-content: space-between;
 }
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+figure {
+   /* width: 400px; /* Ширина области */
+    /*height: 400px; /* Высота области */
+    margin: 0; /* Обнуляем отступы */
+    max-width:100%;
+    height:auto;
+    max-height: 400px;
+}
+figure img {
+    width: 100%; /* Ширина изображений */
+    height: 100%; /* Высота изображении */
 
+}
 .Modal {
     position: absolute;
     display: flex;
